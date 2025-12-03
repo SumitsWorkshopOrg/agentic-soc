@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.py[cod]
+*.class
+.venv/
+venv/
+*.env
+
+# Secrets
+*.json
+key.json
+sa_temp.json
+deploy.log
+
+# Mac
+.DS_Store

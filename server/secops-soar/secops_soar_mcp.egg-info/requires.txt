@@ -1,0 +1,6 @@
+aiohttp>=3.11.15
+mcp[cli]>=1.4.1
+
+[test]
+pytest>=7.0.0
+pytest-asyncio>=0.21.0

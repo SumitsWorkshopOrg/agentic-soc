@@ -1,0 +1,5 @@
+[console_scripts]
+scc_mcp = scc_mcp:main
+
+[mcp]
+scc-mcp = scc_mcp:main

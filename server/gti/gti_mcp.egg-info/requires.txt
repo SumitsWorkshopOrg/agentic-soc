@@ -1,0 +1,8 @@
+mcp
+vt-py
+
+[test]
+pytest
+pytest_httpserver
+pytest_asyncio
+pytest-mock

@@ -1,0 +1,5 @@
+[console_scripts]
+secops_soar_mcp = secops_soar_mcp.server:run_main
+
+[mcp]
+secops-soar = secops_soar_mcp.server:run_main

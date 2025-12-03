@@ -1,0 +1,10 @@
+README.md
+pyproject.toml
+scc_mcp.py
+setup.py
+scc_mcp.egg-info/PKG-INFO
+scc_mcp.egg-info/SOURCES.txt
+scc_mcp.egg-info/dependency_links.txt
+scc_mcp.egg-info/entry_points.txt
+scc_mcp.egg-info/requires.txt
+scc_mcp.egg-info/top_level.txt

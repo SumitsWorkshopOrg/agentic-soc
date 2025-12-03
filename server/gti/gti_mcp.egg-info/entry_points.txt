@@ -1,0 +1,5 @@
+[console_scripts]
+gti_mcp = gti_mcp.server:main
+
+[mcp]
+gti-mcp = gti_mcp.server:main
