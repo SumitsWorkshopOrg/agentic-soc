@@ -11,7 +11,7 @@ Before starting, ensure you have the following information ready:
     * **Customer ID** (Found in SecOps Console > Settings > Profile).
     * **Region** (e.g., `us`, `asia-southeast1`, `australia-southeast1`).
 3.  **SecOps SOAR Details:**
-    * **Instance URL** (Found in C4 under "Response Platform Base URI". Format: `https://gg1np.siemplify-soar.com:443`).
+    * **Instance URL** (With the Google SecOps console in the current browser window, the SOAR_URL can be found by opening the web browser developer tools (in Chrome that is View > Developer > Developer Tools > Network Tab) and typing siemplify-soar into the search filter to filter requests that include this string.  You may need to click the refresh button in the Developer Tools page (or refresh the page altogether) to see requests be generated)
     * **API Key** (Found in SecOps SOAR Console > Settings > Advanced > API Keys).
 4.  **VirusTotal (GTI) API Key:**
     * Get it from [VirusTotal API Key Settings](https://www.virustotal.com/gui/my-apikey).
