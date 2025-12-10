@@ -5,14 +5,16 @@
 import json
 import logging
 import os
+import sys
 from typing import Any, Optional
 from mcp.server.fastmcp import FastMCP
 from secops import SecOpsClient
- 
+
 server = FastMCP("Google Security Operations MCP server", log_level="ERROR")
-logging.basicConfig(level=logging.INFO)
+
+# Configure logging to stdout so we can see errors in Cloud Logging
+logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 logger = logging.getLogger("secops-mcp")
-USER_AGENT = "secops-app/1.0"
 
 DEFAULT_PROJECT_ID = os.environ.get("CHRONICLE_PROJECT_ID", "725716774503")
 DEFAULT_CUSTOMER_ID = os.environ.get("CHRONICLE_CUSTOMER_ID", "c3c6260c1c9340dcbbb802603bbf9636")
@@ -28,35 +30,39 @@ def get_chronicle_client(
     region = region or DEFAULT_REGION
 
     if not project_id or not customer_id:
-        raise ValueError("Chronicle project_id and customer_id must be provided.")
+        logger.error("Missing Project ID or Customer ID")
+        return None
 
-    # PLACEHOLDER: This will be replaced by the attendee's credentials script
-    sa_json_string = r"""
-    {
-      "type": "service_account",
-      "project_id": "PLACEHOLDER",
-      "private_key_id": "PLACEHOLDER",
-      "private_key": "-----BEGIN PRIVATE KEY-----\nPLACEHOLDER\n-----END PRIVATE KEY-----\n",
-      "client_email": "PLACEHOLDER",
-      "client_id": "PLACEHOLDER",
-      "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-      "token_uri": "https://oauth2.googleapis.com/token",
-      "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-      "client_x509_cert_url": "PLACEHOLDER",
-      "universe_domain": "googleapis.com"
-    }
-    """
+    # 1. Determine the directory where THIS script lives
+    base_dir = os.path.dirname(os.path.abspath(__file__))
     
-    # Parse the JSON string
+    # 2. Look for the key file in the same directory
+    # We ignore the env var path to prevent relative path confusion in the cloud
+    sa_key_path = os.path.join(base_dir, "service_account.json")
+
+    logger.info(f"Attempting to load SA Key from: {sa_key_path}")
+
+    if not os.path.exists(sa_key_path):
+        logger.error(f"CRITICAL: Key file NOT found at {sa_key_path}")
+        # List directory contents to help debug
+        try:
+            logger.info(f"Contents of {base_dir}: {os.listdir(base_dir)}")
+        except:
+            pass
+        return None
+
     try:
-        service_account_info = json.loads(sa_json_string) 
-        if "private_key" in service_account_info:
-            service_account_info["private_key"] = service_account_info["private_key"].replace("\\n", "\n")
+        with open(sa_key_path, 'r') as f:
+            service_account_info = json.load(f)
+
+        logger.info(f"Initializing SecOps Client for Region: {region}")
         client = SecOpsClient(service_account_info=service_account_info)
         chronicle = client.chronicle(customer_id=customer_id, project_id=project_id, region=region)
         return chronicle
-    except Exception:
-        # Fallback if placeholder is invalid (expected during initial repo checkout)
+    except Exception as e:
+        logger.error(f"Failed to initialize SecOps client: {e}")
+        import traceback
+        traceback.print_exc()
         return None
 
 from secops_mcp.tools import *
